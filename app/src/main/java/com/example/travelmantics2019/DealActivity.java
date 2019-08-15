@@ -34,6 +34,8 @@ public class DealActivity extends AppCompatActivity {
     EditText txtPrice;
     ImageView imageView;
     TravelDeal deal;
+    Button btnImage;
+    Button btnNegotiate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,16 @@ public class DealActivity extends AppCompatActivity {
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 startActivityForResult(intent.createChooser(intent,
                         "Insert Picture"), PICTURE_RESULT);
+            }
+        });
+
+        //Adding a Negotiation button
+        Button btnNegotiate = findViewById(R.id.btnNegotiate);
+        btnNegotiate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DealActivity.this, ChatActivity.class);
+                        startActivity(intent);
             }
         });
     }
@@ -98,7 +110,13 @@ public class DealActivity extends AppCompatActivity {
         else {
             menu.findItem(R.id.delete_menu).setVisible(false);
             menu.findItem(R.id.save_menu).setVisible(false);
+            //Make an upload image button disappear
+            View b = findViewById(R.id.btnImage);
+            b.setVisibility(View.GONE);
             enableEditTexts(false);
+            //Make a negotiate button appear
+            View c = findViewById(R.id.btnNegotiate);
+            c.setVisibility(View.VISIBLE);
         }
 
 
@@ -147,7 +165,7 @@ public class DealActivity extends AppCompatActivity {
             return;
         }
         mDatabaseReference.child(deal.getId()).removeValue();
-       // Log.d("image name", deal.getImageName());
+
         if(deal.getImageName() != null && deal.getImageName().isEmpty() == false) {
             StorageReference picRef = FirebaseUtil.mStorage.getReference().child(deal.getImageName());
             picRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
